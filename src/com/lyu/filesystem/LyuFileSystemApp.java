@@ -156,8 +156,10 @@ public class LyuFileSystemApp {
 		try {
 			
 			LyuFileSystemApp lyuFileSystem = new LyuFileSystemApp();
-			
-			System.out.println("=========== Build C Driver ===========");
+	
+			System.out.println("============== Build Drivers C and E ==============");
+			System.out.println("   |---------It also show creating folders and files ---------------------------|");
+			System.out.println("   |---------File contents is writen into files and show size-------------------|");
 			
 		    lyuFileSystem.addDriver("C:/");	
 		    lyuFileSystem.createFolder("dir1", "C:/");
@@ -175,8 +177,6 @@ public class LyuFileSystemApp {
 
 		    lyuFileSystem.createFile("textFile_31.txt", "C:/dir1/dir3/");
 		    lyuFileSystem.wrtieTextFile("C:/dir1/dir3/", "textFile_31.txt", "C:/dir1/dir3/textFile_31.txt --- Hello world!");
-
-		    System.out.println("=========== Build E Driver ===========");
 		    
 		    lyuFileSystem.addDriver("E:/");	
 		    lyuFileSystem.createFolder("dirE1", "E:/");
@@ -263,6 +263,7 @@ public class LyuFileSystemApp {
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
 		    lyuFileSystem.printOutTree("C:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
+			
 		    
 		} catch (Exception e) {
 			e.printStackTrace();
