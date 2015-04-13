@@ -16,6 +16,14 @@ import com.lyu.filesystem.ILyuFileSystem;
 import com.lyu.filesystem.entity.LyuFile;
 import com.lyu.filesystem.entity.LyuFile.FILE_TYPE;
 
+/**
+ * @author Lihong Yu
+ * @version 0.1
+ * @since April 10, 2015
+ *
+ * This is the implementation class - core of this file system.
+ * It implements the file system API
+ */
 public class LyuFileSystemImpl implements ILyuFileSystem{
 
 	private static final String DEFAULT_ROOT_NAME = "C:\\";

@@ -10,6 +10,16 @@ import org.apache.commons.lang.StringUtils;
 
 import com.lyu.filesystem.entity.LyuFile;
 
+/**
+ * @author Lihong Yu
+ * @version 0.1
+ * @since April 10, 2015
+ *
+ * This is the most important data structure for this file system.
+ * It is called a node, but it can be a whole tree because each node has 
+ * a parent and as many as you need children. If the node is the root, then 
+ * you can get the whole tree with it.
+ */
 public class LyuDirectoryNode {
 	private LyuDirectoryNode parent;
 	private LyuDirectoryNode current;

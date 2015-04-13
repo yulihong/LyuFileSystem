@@ -60,6 +60,17 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
  * 3. Explicitly implement the property Size.
  *
  */
+
+/**
+ * 
+ * @version 0.1
+ * @since April 10, 2015
+ * This is the test class (run class) which use Linux/Unix path separator '/' and output 
+ * a test report.
+ * It also define an more user friendly API and hide some implementation complexity.
+ * For example addDriver(String driverName) is more readable than
+ * create(LyuFile.FILE_TYPE.DRIVE, driverName, driverName);
+ */
 public class LyuFileSystemApp {
 	
 	private static ILyuFileSystem fileSystem;
@@ -69,7 +80,7 @@ public class LyuFileSystemApp {
 	}
 
 	public void addDriver(String driverName) throws IOException{
-		fileSystem.create(LyuFile.FILE_TYPE.FOLDER, driverName, driverName);	
+		fileSystem.create(LyuFile.FILE_TYPE.DRIVE, driverName, driverName);	
 	}
 
 	public void createFolder(String folderName, String path)  throws Exception {

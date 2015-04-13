@@ -2,6 +2,13 @@ package com.lyu.filesystem.entity;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * @author Lihong Yu
+ * @version 0.1
+ * @since April 10, 2015
+ *
+ * This is the entity for saving data
+ */
 public class LyuFile {
 	public enum FILE_TYPE {
 		DRIVE, FOLDER, FILE, ZIPFILE;
