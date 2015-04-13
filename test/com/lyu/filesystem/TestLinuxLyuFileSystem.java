@@ -8,9 +8,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class Test2 {
-	private String userFileSeparator = "\\\\";
-	
+public class TestLinuxLyuFileSystem {
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -21,7 +20,6 @@ public class Test2 {
 
 	@Before
 	public void setUp() throws Exception {
-		
 	}
 
 	@After
@@ -30,15 +28,7 @@ public class Test2 {
 
 	@Test
 	public void test() {
-		String path = "C:\\testfolder";
-		String[] pathAndName = path.split(userFileSeparator);
-		
-		//path = "C:/testfolder";
-		//pathAndName = path.split(userFileSeparator);
-		
-		if(!path.contains(userFileSeparator)){
-			assertTrue(true);
-		}
+		fail("Not yet implemented");
 	}
 
 }

@@ -1,5 +1,11 @@
 package com.lyu.filesystem;
 
+import java.io.IOException;
+
+import com.lyu.filesystem.entity.LyuFile;
+import com.lyu.filesystem.impl.LyuDirectoryNode;
+import com.lyu.filesystem.impl.LyuFileSystemImpl;
+
 /**
  * 
  * @author Lihong Yu
@@ -55,10 +61,200 @@ package com.lyu.filesystem;
  *
  */
 public class LyuFileSystemApp {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	
+	private static ILyuFileSystem fileSystem;
+	
+	public LyuFileSystemApp() throws Exception {
+		fileSystem = LyuFileSystemImpl.SingleInstance.INSTANCE.getSingleton();
 	}
 
+	public void addDriver(String driverName) throws IOException{
+		fileSystem.create(LyuFile.FILE_TYPE.FOLDER, driverName, driverName);	
+	}
+
+	public void createFolder(String folderName, String path)  throws Exception {
+		    fileSystem.create(LyuFile.FILE_TYPE.FOLDER, folderName, path);
+	}
+	
+	public void createFile(String folderName, String path) throws Exception {
+		    fileSystem.create(LyuFile.FILE_TYPE.FILE, folderName, path);
+	}
+
+	public void wrtieTextFile(String path, String filename, String textContent) throws Exception {
+		    fileSystem.write(path+filename, textContent);
+	}
+	
+	public void delete(String filename) throws Exception {
+			fileSystem.delete(filename);
+	}
+	
+	public void move(String originalFile, String destinationFile) throws Exception {
+		    fileSystem.move(originalFile, destinationFile);
+	}
+	
+	public void zip(String filename) {
+		LyuDirectoryNode startNode = fileSystem.findLocation(filename);
+		startNode.getNodeData().setFileType(LyuFile.FILE_TYPE.ZIPFILE);
+		startNode.zipFile();
+		startNode.updateSizeAfterChange(startNode.getNodeData().getSize()* (-1));
+		
+		LyuDirectoryNode rootNode = fileSystem.getRootNode("C:\\");
+		fileSystem.calculateTreeNodeSize(rootNode);
+
+	}
+	
+	public String readTextFile(String path, String filename) {
+		String textContent = null;
+		try {
+			textContent = fileSystem.read(path+filename);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return textContent;
+	}
+	
+	public void printOutTree(String driver) {
+		printOutTree(fileSystem.getRootNode(driver));
+	}
+	
+	public void printOutTree(LyuDirectoryNode startNode){
+		
+		String bbb = "   ";
+		
+		if(startNode == null){
+			System.out.println("This is an empty tree.");
+			return;
+		}
+
+		System.out.print(bbb + " |-- " + startNode.getNodeData().getName() + " ---------- ");
+		System.out.print("Type: " + startNode.getNodeData().getFileType() + ",   " );
+		System.out.println("Size: " + startNode.getNodeData().getSize());
+		
+		startNode.getChildrenMap().forEach((k, v) -> {
+			printOutTree(v);
+		});	
+	}
+	
+	public void getSize(String driver) throws Exception {
+		System.out.println("Size: " + fileSystem.calculateTreeNodeSize(fileSystem.getRootNode(driver)));
+	}
+	
+	
+	public static void main(String[] agrgs) {
+
+		try {
+			
+			LyuFileSystemApp lyuFileSystem = new LyuFileSystemApp();
+			
+			System.out.println("=========== Build C Driver ===========");
+			
+		    lyuFileSystem.addDriver("C:/");	
+		    lyuFileSystem.createFolder("dir1", "C:/");
+		    lyuFileSystem.createFolder("dir2", "C:/");
+
+		    lyuFileSystem.createFolder("dir3", "C:/dir1/");
+		    lyuFileSystem.createFolder("dir4", "C:/dir1/");
+		    lyuFileSystem.createFile("textFile_11.txt", "C:/dir1/");
+		    lyuFileSystem.wrtieTextFile("C:/dir1/", "textFile_11.txt", "C:/dir1/textFile_11.txt --- Hello world!");
+		    lyuFileSystem.createFile("textFile_12.txt", "C:/dir1/");
+		    lyuFileSystem.wrtieTextFile("C:/dir1/", "textFile_12.txt", "C:/dir1/textFile_12.txt --- abcdefghijklmn");
+		    lyuFileSystem.createFile("textFile_13.txt", "C:/dir1/");
+		    lyuFileSystem.wrtieTextFile("C:/dir1/", "textFile_13.txt", "C:/dir1/textFile_13.txt --- 0123456789");
+
+
+		    lyuFileSystem.createFile("textFile_31.txt", "C:/dir1/dir3/");
+		    lyuFileSystem.wrtieTextFile("C:/dir1/dir3/", "textFile_31.txt", "C:/dir1/dir3/textFile_31.txt --- Hello world!");
+
+		    System.out.println("=========== Build E Driver ===========");
+		    
+		    lyuFileSystem.addDriver("E:/");	
+		    lyuFileSystem.createFolder("dirE1", "E:/");
+		    lyuFileSystem.createFile("textFile_E11.txt", "E:/dirE1/");
+		    lyuFileSystem.wrtieTextFile("E:/dirE1/", "textFile_E11.txt", "E:/dirE1/textFile_E11.txt --- Hello world!");
+		    
+		    System.out.println("\n=========== Bellow are the current file lists of C:/ and E:/ ===========");
+		    
+		    System.out.println("\n    +------------------------- File List of C:/ ---------------------------+");
+		    lyuFileSystem.printOutTree("C:/");
+		    System.out.println("    +----------------------------------------------------------------------+");
+		    
+		    System.out.println("\n    +------------------------- List List of E:/ ---------------------------+");		    
+		    lyuFileSystem.printOutTree("E:/");
+		    System.out.println("    +----------------------------------------------------------------------+");
+		    
+		    // ---------- Read file ---------- //
+		    
+		    System.out.println("\n=========== Read the file C:/dir1/textFile_11.txt ===========\n");
+		    
+		    String fileContentString = lyuFileSystem.readTextFile("C:/dir1/", "textFile_11.txt");
+		    System.out.println("----- Bellow is the content of file C:/dir1/textFile_11.txt ----- ");
+		    System.out.println(fileContentString);
+		    
+		    // ---------- Move file ---------- //
+		    
+		    System.out.println("\n=========== Move file C:/dir1/textFile_12.txt to C:/dir2/textFile_12.txt ===========");	    
+		    lyuFileSystem.move("C:/dir1/textFile_12.txt", "C:/dir2/textFile_12.txt");
+		    
+		    System.out.println("\n    - Bellow is the file list of C:/ after moving the file C:/dir1/textFile_12.txt to C:/dir2/textFile_12.txt");
+		    System.out.println("    - C:/dir1/textFile_12.txt has been removed.");
+		    System.out.println("    - C:/dir2/textFile_12.txt was added.");
+		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
+		    lyuFileSystem.printOutTree("C:/");	
+		    System.out.println("    +----------------------------------------------------------------------+");
+		    
+		    System.out.println("\n=========== Move file C:/dir1/dir3/textFile_31.txt to E:/dirE1/ ===========");
+		    lyuFileSystem.move("C:/dir1/dir3/textFile_31.txt", "E:/dirE1/");
+		    
+		    System.out.println("\n    - Bellow are the file lists of C:/ and E:/ after moving the file C:/dir1/dir3/textFile_31.txt to E:/dirE1/");
+		    System.out.println("    - C:/dir1/dir3/textFile_31.txt has been removed.");
+		    System.out.println("    - E:/dirE1/textFile_31.txt was added.");
+		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
+		    lyuFileSystem.printOutTree("C:/");
+		    System.out.println("    +----------------------------------------------------------------------+");
+		    System.out.println("\n    +------------------------- List of E Driver ---------------------------+");
+		    lyuFileSystem.printOutTree("E:/");
+		    System.out.println("    +----------------------------------------------------------------------+");
+
+		    System.out.println("\n=========== Move folder E:/dirE1 to C:/dir1/ ===========");	    
+		    lyuFileSystem.move("E:/dirE1/", "C:/dir1/");
+		    
+		    System.out.println("\n    - Bellow are the file lists of C:/ and E:/ after moving folder E:/dirE1 to C:/dir1/");
+		    System.out.println("    - E:/ is now empty.");
+		    System.out.println("    - Folder dirE1 was added to C:/dir1/.");
+		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
+		    lyuFileSystem.printOutTree("C:/");
+		    System.out.println("    +----------------------------------------------------------------------+");
+		    System.out.println("\n    +------------------------- List of E Driver ---------------------------+");
+		    lyuFileSystem.printOutTree("E:/");
+		    System.out.println("    +----------------------------------------------------------------------+");		    
+
+		    
+		    // ---------- Delete file / folder ---------- //
+		    
+		    System.out.println("\n=========== Delete file C:/dir1/textFile_11.txt ===========");	    
+		    lyuFileSystem.delete("C:/dir1/textFile_11.txt");
+		    
+		    System.out.println("\n    - Bellow are the file lists of C:/ after deleting file C:/dir1/textFile_11.txt");
+		    System.out.println("    - File C:/dir1/textFile_11.txt was removed.");
+		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
+		    lyuFileSystem.printOutTree("C:/");
+		    System.out.println("    +----------------------------------------------------------------------+");
+		    
+		    
+		    // ---------- Zip file / folder ---------- //
+		    
+		    System.out.println("\n=========== Zip file C:/dir1/textFile_13.txt ===========");
+		    lyuFileSystem.zip("C:/dir1/textFile_13.txt");
+		    
+		    System.out.println("\n    - Bellow are the file lists of C:/ after zipping file C:/dir1/textFile_13.txt");
+		    System.out.println("    - The size of file C:/dir1/textFile_13.txt has been changed from 38 to 19 ");
+		    System.out.println("    - and it's parent folder C:, dir1 are both reduce size correctly 167-148, 125-106.");
+		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
+		    lyuFileSystem.printOutTree("C:/");
+		    System.out.println("    +----------------------------------------------------------------------+");
+		    
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

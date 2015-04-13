@@ -1,14 +1,12 @@
 package com.lyu.filesystem.entity;
 
-import java.io.File;
-
 import org.apache.commons.lang.StringUtils;
 
 public class LyuFile {
 	public enum FILE_TYPE {
-		DRIVE, FOLDER, FILE, ZIPFILE
+		DRIVE, FOLDER, FILE, ZIPFILE;
 	};
-
+	
 	private String name;
 	private String path;
 	private int size;
@@ -39,18 +37,12 @@ public class LyuFile {
 		if (StringUtils.isBlank(path)) {
 			setToDefaultName();
 		} else {
-			String[] pathAndName = path.split(File.separator);
-			if (pathAndName.length > 1) {			
-				this.name = pathAndName[pathAndName.length - 1];
-			}
-			else if(pathAndName.length == 1){
-				this.name = pathAndName[0];
-			}
+			this.path = path;
 		}
 	}
 
-	public String findNameInPath() {
-		String[] pathAndName = path.split(File.separator);
+	public String findNameInPath(String fileSeparator) {
+		String[] pathAndName = path.split(fileSeparator);
 		if (pathAndName.length < 2) {
 			return path;
 		} else {
@@ -103,5 +95,4 @@ public class LyuFile {
 	public void setFileType(FILE_TYPE fileType) {
 		this.fileType = fileType;
 	}
-
 }
