@@ -15,7 +15,7 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
  * This is an application which implements an in-memory file system. This file-system consists of 4 types of entities: 
  * Drives, Folders, Text files, and Zip files.
  * 
- * These entities, very much like their “real” file-system counterparts, obey the following relations.
+ * These entities, very much like their â€œrealâ€� file-system counterparts, obey the following relations.
 
  * 1. A folder, a drive or a zip file, may contain zero to many other folders, or files (text or zip).
  * 2. A text file does not contain any other entity.
@@ -26,36 +26,36 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
  
  * Every entity has the following properties:
 
- *   + Type – The type of the entity (one of the 4 type above).
+ *   + Type â€“ The type of the entity (one of the 4 type above).
  *   + Name - An alphanumeric string. Two entities with the same parent cannot have the same name. Similarly, two drives cannot have the same name.
- *   + Path – The concatenation of the names of the containing entities, from the drive down to and including the entity. The names are separated by ‘\’.
+ *   + Path â€“ The concatenation of the names of the containing entities, from the drive down to and including the entity. The names are separated by â€˜\â€™.
  *   + A text file has a property called Content which is a string.
- *   + Size – an integer defined as follows:
+ *   + Size â€“ an integer defined as follows:
 
- * §  For a text file – it is the length of its content.
- * §  For a drive or a folder, it is the sum of all sizes of the entities it contains.
- * §  For a zip file, it is one half of the sum of all sizes of the entities it contains.
+ * Â§  For a text file â€“ it is the length of its content.
+ * Â§  For a drive or a folder, it is the sum of all sizes of the entities it contains.
+ * Â§  For a zip file, it is one half of the sum of all sizes of the entities it contains.
  
  * The system should be capable of supporting file-system like operations
  
- * 1)	Create – Creates a new entity.
+ * 1)	Create â€“ Creates a new entity.
  * Arguments: Type, Name, Path of parent.
  * Exceptions: Path not found; Path already exists; Illegal File System Operation (if any of the rules a-d above is violated).
 
- * 2)	Delete – Deletes an existing entity (and all the entities it contains).
+ * 2)	Delete â€“ Deletes an existing entity (and all the entities it contains).
  * Arguments: Path
  * Exceptions: Path not found.
 
- * 3)	Move – Changing the parent of an entity.
+ * 3)	Move â€“ Changing the parent of an entity.
  * Arguments: Source Path, Destination Path.
  * Exceptions: Path not found; Path already exists, Illegal File System Operation.
 
- * 4)	WriteToFile – Changes the content of a text file.
+ * 4)	WriteToFile â€“ Changes the content of a text file.
  * Arguments: Path, Content
  * Exceptions: Path not found; Not a text file.
  
  * Tasks:
- * 1. Come up with the design for this system. Full implementation is not required, but only to the level which you feel is a “proof of concept”.
+ * 1. Come up with the design for this system. Full implementation is not required, but only to the level which you feel is a â€œproof of conceptâ€�.
  * 2. Show a sketch of implementation of the Move operation.
  * 3. Explicitly implement the property Size.
  *
@@ -74,6 +74,7 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
 public class LyuFileSystemApp {
 	
 	private static ILyuFileSystem fileSystem;
+	private static final String ZIP_FILE_EX = ".zip";
 	
 	public LyuFileSystemApp() throws Exception {
 		fileSystem = LyuFileSystemImpl.SingleInstance.INSTANCE.getSingleton();
@@ -103,13 +104,17 @@ public class LyuFileSystemApp {
 		    fileSystem.move(originalFile, destinationFile);
 	}
 	
-	public void zip(String filename) {
-		LyuDirectoryNode startNode = fileSystem.findLocation(filename);
+	public void zip(String path, String filename) {
+		LyuDirectoryNode startNode = fileSystem.findLocation(path+filename);
 		startNode.getNodeData().setFileType(LyuFile.FILE_TYPE.ZIPFILE);
+		int dotPos = filename.indexOf('.');
+		if(dotPos == 0)
+			dotPos = filename.length();
+		startNode.getNodeData().setName(filename.substring(0, dotPos)+ZIP_FILE_EX);
 		startNode.zipFile();
 		startNode.updateSizeAfterChange(startNode.getNodeData().getSize()* (-1));
 		
-		LyuDirectoryNode rootNode = fileSystem.getRootNode("C:\\");
+		LyuDirectoryNode rootNode = fileSystem.getRootNode(filename);
 		fileSystem.calculateTreeNodeSize(rootNode);
 
 	}
@@ -125,24 +130,24 @@ public class LyuFileSystemApp {
 	}
 	
 	public void printOutTree(String driver) {
-		printOutTree(fileSystem.getRootNode(driver));
+		printOutTree(fileSystem.getRootNode(driver), "");
 	}
 	
-	public void printOutTree(LyuDirectoryNode startNode){
+	public void printOutTree(LyuDirectoryNode startNode, String treeIndentA){
 		
-		String bbb = "   ";
+		String treeIndentB = treeIndentA + "   ";
 		
 		if(startNode == null){
 			System.out.println("This is an empty tree.");
 			return;
 		}
 
-		System.out.print(bbb + " |-- " + startNode.getNodeData().getName() + " ---------- ");
+		System.out.print(treeIndentB + " |-- " + startNode.getNodeData().getName() + " ---------- ");
 		System.out.print("Type: " + startNode.getNodeData().getFileType() + ",   " );
 		System.out.println("Size: " + startNode.getNodeData().getSize());
 		
 		startNode.getChildrenMap().forEach((k, v) -> {
-			printOutTree(v);
+			printOutTree(v, treeIndentB);
 		});	
 	}
 	
@@ -158,8 +163,8 @@ public class LyuFileSystemApp {
 			LyuFileSystemApp lyuFileSystem = new LyuFileSystemApp();
 	
 			System.out.println("============== Build Drivers C and E ==============");
-			System.out.println("   |---------It also show creating folders and files ---------------------------|");
-			System.out.println("   |---------File contents is writen into files and show size-------------------|");
+			System.out.println("    |---------It also show creating folders and files ---------------------------|");
+			System.out.println("    |---------File contents is writen into files and show size-------------------|");
 			
 		    lyuFileSystem.addDriver("C:/");	
 		    lyuFileSystem.createFolder("dir1", "C:/");
@@ -255,11 +260,12 @@ public class LyuFileSystemApp {
 		    // ---------- Zip file / folder ---------- //
 		    
 		    System.out.println("\n=========== Zip file C:/dir1/textFile_13.txt ===========");
-		    lyuFileSystem.zip("C:/dir1/textFile_13.txt");
+		    lyuFileSystem.zip("C:/dir1/", "textFile_13.txt");
 		    
 		    System.out.println("\n    - Bellow are the file lists of C:/ after zipping file C:/dir1/textFile_13.txt");
-		    System.out.println("    - The size of file C:/dir1/textFile_13.txt has been changed from 38 to 19 ");
-		    System.out.println("    - and it's parent folder C:, dir1 are both reduce size correctly 167-148, 125-106.");
+		    System.out.println("    - The name of file C:/dir1/textFile_13.txt has been changed to textFile_13.zip.");
+		    System.out.println("    - The size of file C:/dir1/textFile_13.zip has been changed from 38 to 19. ");
+		    System.out.println("    - It's parent folders (C:/, C:/dir1) are both reduce size correctly (167 -> 148, 125 -> 106).");
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
 		    lyuFileSystem.printOutTree("C:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
