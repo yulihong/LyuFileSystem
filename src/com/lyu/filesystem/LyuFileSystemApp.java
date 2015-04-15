@@ -1,6 +1,10 @@
 package com.lyu.filesystem;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.lyu.filesystem.entity.LyuFile;
 import com.lyu.filesystem.impl.LyuDirectoryNode;
@@ -67,7 +71,7 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
  * @since April 10, 2015
  * This is the test class (run class) which use Linux/Unix path separator '/' and output 
  * a test report.
- * It also define an more user friendly API and hide some implementation complexity.
+ * It also define a more user friendly API and hide some implementation complexity.
  * For example addDriver(String driverName) is more readable than
  * create(LyuFile.FILE_TYPE.DRIVE, driverName, driverName);
  */
@@ -75,6 +79,8 @@ public class LyuFileSystemApp {
 	
 	private static ILyuFileSystem fileSystem;
 	private static final String ZIP_FILE_EX = ".zip";
+	private  String userFileSeparator;
+	private  String FILE_SEPARATOR = "/"; //if not / set to \\\\ 
 	
 	public LyuFileSystemApp() throws Exception {
 		fileSystem = LyuFileSystemImpl.SingleInstance.INSTANCE.getSingleton();
@@ -105,7 +111,9 @@ public class LyuFileSystemApp {
 	}
 	
 	public void zip(String path, String filename) {
-		LyuDirectoryNode startNode = fileSystem.findLocation(path+filename);
+		LyuDirectoryNode root = fileSystem.findRootNode(path);
+		LinkedList<String> pathList = getPathList(path);
+		LyuDirectoryNode startNode = root.findLocation(pathList, root);
 		startNode.getNodeData().setFileType(LyuFile.FILE_TYPE.ZIPFILE);
 		int dotPos = filename.indexOf('.');
 		if(dotPos == 0)
@@ -113,10 +121,6 @@ public class LyuFileSystemApp {
 		startNode.getNodeData().setName(filename.substring(0, dotPos)+ZIP_FILE_EX);
 		startNode.zipFile();
 		startNode.updateSizeAfterChange(startNode.getNodeData().getSize()* (-1));
-		
-		LyuDirectoryNode rootNode = fileSystem.getRootNode(filename);
-		fileSystem.calculateTreeNodeSize(rootNode);
-
 	}
 	
 	public String readTextFile(String path, String filename) {
@@ -129,32 +133,33 @@ public class LyuFileSystemApp {
 		return textContent;
 	}
 	
-	public void printOutTree(String driver) {
-		printOutTree(fileSystem.getRootNode(driver), "");
-	}
-	
-	public void printOutTree(LyuDirectoryNode startNode, String treeIndentA){
-		
-		String treeIndentB = treeIndentA + "   ";
-		
-		if(startNode == null){
-			System.out.println("This is an empty tree.");
-			return;
-		}
-
-		System.out.print(treeIndentB + " |-- " + startNode.getNodeData().getName() + " ---------- ");
-		System.out.print("Type: " + startNode.getNodeData().getFileType() + ",   " );
-		System.out.println("Size: " + startNode.getNodeData().getSize());
-		
-		startNode.getChildrenMap().forEach((k, v) -> {
-			printOutTree(v, treeIndentB);
-		});	
+	public static void printOutTree(String driver) {
+		LyuDirectoryNode rootNode = fileSystem.findRootNode(driver);
+		rootNode.printOutTree("");
 	}
 	
 	public void getSize(String driver) throws Exception {
-		System.out.println("Size: " + fileSystem.calculateTreeNodeSize(fileSystem.getRootNode(driver)));
+		LyuDirectoryNode rootNode = fileSystem.findRootNode(driver);
+		System.out.println("Size: " + rootNode.calculateTreeNodeSize());
 	}
 	
+	private LinkedList<String> getPathList(String path) {
+		if(userFileSeparator == null)
+			userFileSeparator = getPathSeparator(path);
+		String[] pathAndName = path.split(userFileSeparator);
+		LinkedList<String> pathList = new LinkedList<String>(Arrays.asList(pathAndName));
+		return pathList;
+	}
+	
+	private String getPathSeparator(String path){
+		if(!StringUtils.isBlank(path)){
+			if(!path.contains(FILE_SEPARATOR)){
+				FILE_SEPARATOR = "\\\\";
+				return FILE_SEPARATOR;
+			}
+		}
+		return FILE_SEPARATOR;	
+	}
 	
 	public static void main(String[] agrgs) {
 
@@ -191,11 +196,11 @@ public class LyuFileSystemApp {
 		    System.out.println("\n=========== Bellow are the current file lists of C:/ and E:/ ===========");
 		    
 		    System.out.println("\n    +------------------------- File List of C:/ ---------------------------+");
-		    lyuFileSystem.printOutTree("C:/");
+		    printOutTree("C:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
 		    
 		    System.out.println("\n    +------------------------- List List of E:/ ---------------------------+");		    
-		    lyuFileSystem.printOutTree("E:/");
+		    printOutTree("E:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
 		    
 		    // ---------- Read file ---------- //
@@ -215,7 +220,7 @@ public class LyuFileSystemApp {
 		    System.out.println("    - C:/dir1/textFile_12.txt has been removed.");
 		    System.out.println("    - C:/dir2/textFile_12.txt was added.");
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
-		    lyuFileSystem.printOutTree("C:/");	
+		    printOutTree("C:/");	
 		    System.out.println("    +----------------------------------------------------------------------+");
 		    
 		    System.out.println("\n=========== Move file C:/dir1/dir3/textFile_31.txt to E:/dirE1/ ===========");
@@ -225,10 +230,10 @@ public class LyuFileSystemApp {
 		    System.out.println("    - C:/dir1/dir3/textFile_31.txt has been removed.");
 		    System.out.println("    - E:/dirE1/textFile_31.txt was added.");
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
-		    lyuFileSystem.printOutTree("C:/");
+		    printOutTree("C:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
 		    System.out.println("\n    +------------------------- List of E Driver ---------------------------+");
-		    lyuFileSystem.printOutTree("E:/");
+		    printOutTree("E:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
 
 		    System.out.println("\n=========== Move folder E:/dirE1 to C:/dir1/ ===========");	    
@@ -238,10 +243,10 @@ public class LyuFileSystemApp {
 		    System.out.println("    - E:/ is now empty.");
 		    System.out.println("    - Folder dirE1 was added to C:/dir1/.");
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
-		    lyuFileSystem.printOutTree("C:/");
+		    printOutTree("C:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
 		    System.out.println("\n    +------------------------- List of E Driver ---------------------------+");
-		    lyuFileSystem.printOutTree("E:/");
+		    printOutTree("E:/");
 		    System.out.println("    +----------------------------------------------------------------------+");		    
 
 		    
@@ -253,7 +258,7 @@ public class LyuFileSystemApp {
 		    System.out.println("\n    - Bellow are the file lists of C:/ after deleting file C:/dir1/textFile_11.txt");
 		    System.out.println("    - File C:/dir1/textFile_11.txt was removed.");
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
-		    lyuFileSystem.printOutTree("C:/");
+		    printOutTree("C:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
 		    
 		    
@@ -267,7 +272,7 @@ public class LyuFileSystemApp {
 		    System.out.println("    - The size of file C:/dir1/textFile_13.zip has been changed from 38 to 19. ");
 		    System.out.println("    - It's parent folders (C:/, C:/dir1) are both reduce size correctly (167 -> 148, 125 -> 106).");
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
-		    lyuFileSystem.printOutTree("C:/");
+		    printOutTree("C:/");
 		    System.out.println("    +----------------------------------------------------------------------+");
 			
 		    

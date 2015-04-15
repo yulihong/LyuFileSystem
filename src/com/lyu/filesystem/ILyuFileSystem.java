@@ -15,19 +15,16 @@ import com.lyu.filesystem.impl.LyuDirectoryNode;
  *This interface define APIs for this file system
  */
 public interface ILyuFileSystem {
+	public static final String DEFAULT_ROOT_NAME = "C:\\";
+	public static final String WINDOWS_SEPARATOR = "\\";
+	
 	LyuFile create(LyuFile.FILE_TYPE fileType, String name, String path) throws FileNotFoundException, FileAlreadyExistsException;
 	LyuDirectoryNode delete(String path) throws IOException, FileNotFoundException;
 	boolean move(String src, String target) throws FileNotFoundException, FileAlreadyExistsException, IOException;
 	LyuFile write(String path, String content) throws FileNotFoundException, IOException;
 	String read(String path) throws FileNotFoundException,IOException;
-	//The following are heavily used in LyuFileSystemImpl for 
-	//manipulating the information saved in the trees.
-	//It would be better to hide them ( move out of this API)
-	//This would be a 
-	//TODO -Improvement: task for improvement
-	LyuDirectoryNode getRootNode(String rootName);
-	void printOutTree(LyuDirectoryNode startNode);
-	LyuDirectoryNode findLocation(String path);
-	void clearTree(LyuDirectoryNode startNode);
-	int calculateTreeNodeSize(LyuDirectoryNode startNode);
+	//The following method is used in LyuFileSystemImpl for 
+	//finding root in a tree. This need to be defined here because
+	//there are multiple trees in the file system
+	public LyuDirectoryNode findRootNode(String path) throws RuntimeException;
 }
