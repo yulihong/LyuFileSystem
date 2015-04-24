@@ -6,6 +6,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -285,6 +286,12 @@ public class LyuFileSystemImpl implements ILyuFileSystem{
 		LyuDirectoryNode root = findRootNode(path);
 		LinkedList<String> pathList = getPathList(path);
 		LyuDirectoryNode startNode = root.findLocation(pathList, root);
+		
+		Map<String, LyuDirectoryNode> childrenMap = startNode.getChildrenMap();
+		if(childrenMap == null || !childrenMap.containsKey(fileName)){
+			throw new FileNotFoundException("cannot find " + fileName + " under " + path);
+		}
+		startNode = childrenMap.get(fileName);
 		startNode.getNodeData().setFileType(LyuFile.FILE_TYPE.ZIPFILE);
 		int dotPos = fileName.indexOf('.');
 		if(dotPos == -1)

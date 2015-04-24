@@ -146,7 +146,7 @@ public class TestLyuFileSystem {
 			System.out.println("This is the tree before zip:");
 			rootNode.printOutTree("");
 			
-			lyuFileSystem.zip("C:\\testfolder", "testfolder");
+			lyuFileSystem.zip("C:\\", "testfolder");
 			
 			System.out.println("This is the tree after zip:");
 			rootNode.printOutTree("");
