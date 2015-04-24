@@ -85,13 +85,12 @@ public class LyuDirectoryNode {
 		this.getChildrenMap().forEach((k, v) -> {
 			v.zipFile();
 		});
-
 	}
 
 	/**
 	 * 
 	 * @param changedSize
-	 *            can be negitive
+	 *            can be negative
 	 */
 	public void updateSizeAfterChange(int changedSize) {
 		if (this.getNodeData() == null)

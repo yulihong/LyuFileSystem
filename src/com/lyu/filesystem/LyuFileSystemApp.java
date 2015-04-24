@@ -1,10 +1,7 @@
 package com.lyu.filesystem;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.lyu.filesystem.entity.LyuFile;
 import com.lyu.filesystem.impl.LyuDirectoryNode;
@@ -78,9 +75,6 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
 public class LyuFileSystemApp {
 	
 	private static ILyuFileSystem fileSystem;
-	private static final String ZIP_FILE_EX = ".zip";
-	private  String userFileSeparator;
-	private  String FILE_SEPARATOR = "/"; //if not / set to \\\\ 
 	
 	public LyuFileSystemApp() throws Exception {
 		fileSystem = LyuFileSystemImpl.SingleInstance.INSTANCE.getSingleton();
@@ -102,7 +96,7 @@ public class LyuFileSystemApp {
 		    fileSystem.write(path+filename, textContent);
 	}
 	
-	public void delete(String filename) throws Exception {
+	public void delete(String filename) throws FileNotFoundException, IllegalArgumentException{
 			fileSystem.delete(filename);
 	}
 	
@@ -110,31 +104,19 @@ public class LyuFileSystemApp {
 		    fileSystem.move(originalFile, destinationFile);
 	}
 	
-	public void zip(String path, String filename) {
-		LyuDirectoryNode root = fileSystem.findRootNode(path);
-		LinkedList<String> pathList = getPathList(path);
-		LyuDirectoryNode startNode = root.findLocation(pathList, root);
-		startNode.getNodeData().setFileType(LyuFile.FILE_TYPE.ZIPFILE);
-		int dotPos = filename.indexOf('.');
-		if(dotPos == 0)
-			dotPos = filename.length();
-		startNode.getNodeData().setName(filename.substring(0, dotPos)+ZIP_FILE_EX);
-		startNode.zipFile();
-		startNode.updateSizeAfterChange(startNode.getNodeData().getSize()* (-1));
-	}
-	
 	public String readTextFile(String path, String filename) {
 		String textContent = null;
 		try {
 			textContent = fileSystem.read(path+filename);
-		} catch (IOException e) {
+		} catch (FileNotFoundException  e) {
 			e.printStackTrace();
 		} 
 		return textContent;
 	}
 	
-	public static void printOutTree(String driver) {
-		LyuDirectoryNode rootNode = fileSystem.findRootNode(driver);
+	public static void printOutTree(String driver) throws FileNotFoundException{
+		LyuDirectoryNode rootNode;		
+		rootNode = fileSystem.findRootNode(driver);		
 		rootNode.printOutTree("");
 	}
 	
@@ -143,26 +125,11 @@ public class LyuFileSystemApp {
 		System.out.println("Size: " + rootNode.calculateTreeNodeSize());
 	}
 	
-	private LinkedList<String> getPathList(String path) {
-		if(userFileSeparator == null)
-			userFileSeparator = getPathSeparator(path);
-		String[] pathAndName = path.split(userFileSeparator);
-		LinkedList<String> pathList = new LinkedList<String>(Arrays.asList(pathAndName));
-		return pathList;
-	}
-	
-	private String getPathSeparator(String path){
-		if(!StringUtils.isBlank(path)){
-			if(!path.contains(FILE_SEPARATOR)){
-				FILE_SEPARATOR = "\\\\";
-				return FILE_SEPARATOR;
-			}
-		}
-		return FILE_SEPARATOR;	
+	private void zip(String path, String filename) throws FileNotFoundException {
+		fileSystem.zip(path, filename);		
 	}
 	
 	public static void main(String[] agrgs) {
-
 		try {
 			
 			LyuFileSystemApp lyuFileSystem = new LyuFileSystemApp();
@@ -248,8 +215,7 @@ public class LyuFileSystemApp {
 		    System.out.println("\n    +------------------------- List of E Driver ---------------------------+");
 		    printOutTree("E:/");
 		    System.out.println("    +----------------------------------------------------------------------+");		    
-
-		    
+	    
 		    // ---------- Delete file / folder ---------- //
 		    
 		    System.out.println("\n=========== Delete file C:/dir1/textFile_11.txt ===========");	    
@@ -259,8 +225,7 @@ public class LyuFileSystemApp {
 		    System.out.println("    - File C:/dir1/textFile_11.txt was removed.");
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
 		    printOutTree("C:/");
-		    System.out.println("    +----------------------------------------------------------------------+");
-		    
+		    System.out.println("    +----------------------------------------------------------------------+");	    
 		    
 		    // ---------- Zip file / folder ---------- //
 		    
@@ -273,8 +238,7 @@ public class LyuFileSystemApp {
 		    System.out.println("    - It's parent folders (C:/, C:/dir1) are both reduce size correctly (167 -> 148, 125 -> 106).");
 		    System.out.println("\n    +------------------------- List of C Driver ---------------------------+");
 		    printOutTree("C:/");
-		    System.out.println("    +----------------------------------------------------------------------+");
-			
+		    System.out.println("    +----------------------------------------------------------------------+");			
 		    
 		} catch (Exception e) {
 			e.printStackTrace();
