@@ -1,7 +1,7 @@
 package com.lyu.filesystem;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 import com.lyu.filesystem.entity.LyuFile;
 import com.lyu.filesystem.impl.LyuDirectoryNode;
@@ -80,19 +80,19 @@ public class LyuFileSystemApp {
 		fileSystem = LyuFileSystemImpl.SingleInstance.INSTANCE.getSingleton();
 	}
 
-	public void addDriver(String driverName) throws IOException{
+	public void addDriver(String driverName) throws FileNotFoundException, FileAlreadyExistsException{
 		fileSystem.create(LyuFile.FILE_TYPE.DRIVE, driverName, driverName);	
 	}
 
-	public void createFolder(String folderName, String path)  throws Exception {
+	public void createFolder(String folderName, String path)  throws FileNotFoundException,FileAlreadyExistsException {
 		    fileSystem.create(LyuFile.FILE_TYPE.FOLDER, folderName, path);
 	}
 	
-	public void createFile(String folderName, String path) throws Exception {
+	public void createFile(String folderName, String path) throws FileAlreadyExistsException, FileNotFoundException  {
 		    fileSystem.create(LyuFile.FILE_TYPE.FILE, folderName, path);
 	}
 
-	public void wrtieTextFile(String path, String filename, String textContent) throws Exception {
+	public void wrtieTextFile(String path, String filename, String textContent) throws FileNotFoundException {
 		    fileSystem.write(path+filename, textContent);
 	}
 	
@@ -100,7 +100,7 @@ public class LyuFileSystemApp {
 			fileSystem.delete(filename);
 	}
 	
-	public void move(String originalFile, String destinationFile) throws Exception {
+	public void move(String originalFile, String destinationFile) throws FileAlreadyExistsException, FileNotFoundException, IllegalArgumentException {
 		    fileSystem.move(originalFile, destinationFile);
 	}
 	
@@ -120,7 +120,7 @@ public class LyuFileSystemApp {
 		rootNode.printOutTree("");
 	}
 	
-	public void getSize(String driver) throws Exception {
+	public void getSize(String driver) throws FileNotFoundException  {
 		LyuDirectoryNode rootNode = fileSystem.findRootNode(driver);
 		System.out.println("Size: " + rootNode.calculateTreeNodeSize());
 	}
