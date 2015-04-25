@@ -1,0 +1,142 @@
+==========testZip() logs START===============
+This is the tree before zip:
+    |-- C:\ ---------- Type: DRIVE,   Size: 18
+       |-- testfolder ---------- Type: FOLDER,   Size: 18
+          |-- testfile.txt ---------- Type: FILE,   Size: 18
+Content: Hello world!012345
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+This is the tree after zip:
+    |-- C:\ ---------- Type: DRIVE,   Size: 9
+       |-- testfolder.zip ---------- Type: ZIPFILE,   Size: 9
+          |-- testfile.txt ---------- Type: FILE,   Size: 9
+Content: Hello world!012345
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+==========testZip() logs END===================
+ 
+==========testWrite() logs START===============
+This is the tree before writing:
+    |-- E:\ ---------- Type: DRIVE,   Size: 0
+       |-- tmp ---------- Type: FOLDER,   Size: 0
+          |-- testfile1.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfileDel.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfileMove.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+This is the tree after writing:
+    |-- E:\ ---------- Type: DRIVE,   Size: 12
+       |-- tmp ---------- Type: FOLDER,   Size: 12
+          |-- testfile1.txt ---------- Type: FILE,   Size: 12
+Content: Hello world!
+          |-- testfileDel.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfileMove.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+==========testWrite() logs END===================
+ 
+==========testMove() logs START===============
+This is the tree before moving:
+    |-- C:\ ---------- Type: DRIVE,   Size: 9
+       |-- testfolder.zip ---------- Type: ZIPFILE,   Size: 9
+          |-- testfile.txt ---------- Type: FILE,   Size: 9
+Content: Hello world!012345
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+This is the tree after moving:
+    |-- C:\ ---------- Type: DRIVE,   Size: 9
+       |-- testfolder.zip ---------- Type: ZIPFILE,   Size: 9
+          |-- testfile.txt ---------- Type: FILE,   Size: 9
+Content: Hello world!012345
+          |-- testfileMove.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+==========testMove() logs END===================
+ 
+==========testRead() logs START===============
+Content in E:\tmp\testfile1.txt is: Hello world!Hello world!012345
+    |-- E:\ ---------- Type: DRIVE,   Size: 30
+       |-- tmp ---------- Type: FOLDER,   Size: 30
+          |-- testfile1.txt ---------- Type: FILE,   Size: 30
+Content: Hello world!Hello world!012345
+          |-- testfileDel.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+==========testRead() logs END===================
+ 
+==========testCalcualteSize() logs START===============
+This is the tree after writing:
+The tree size is: 52
+    |-- E:\ ---------- Type: DRIVE,   Size: 52
+       |-- tmp ---------- Type: FOLDER,   Size: 52
+          |-- testfile1.txt ---------- Type: FILE,   Size: 52
+Content: Hello world!Hello world!012345Hello world!0123456789
+          |-- testfileDel.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+==========testCalcualteSize() logs END===================
+ 
+==========testCreate() logs START===============
+This is the tree before adding a file to tmp:
+    |-- E:\ ---------- Type: DRIVE,   Size: 52
+       |-- tmp ---------- Type: FOLDER,   Size: 52
+          |-- testfile1.txt ---------- Type: FILE,   Size: 52
+Content: Hello world!Hello world!012345Hello world!0123456789
+          |-- testfileDel.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+This is the tree after adding a file to tmp:
+    |-- E:\ ---------- Type: DRIVE,   Size: 52
+       |-- tmp ---------- Type: FOLDER,   Size: 52
+          |-- testfile1.txt ---------- Type: FILE,   Size: 52
+Content: Hello world!Hello world!012345Hello world!0123456789
+          |-- testfileDel.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile5.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+==========testCreate() logs END===================
+ 
+==========testDelete() logs START===============
+This is the tree before deleteing:
+    |-- E:\ ---------- Type: DRIVE,   Size: 52
+       |-- tmp ---------- Type: FOLDER,   Size: 52
+          |-- testfile1.txt ---------- Type: FILE,   Size: 52
+Content: Hello world!Hello world!012345Hello world!0123456789
+          |-- testfileDel.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile5.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+This is the tree after deleteing:
+    |-- C:\ ---------- Type: DRIVE,   Size: 9
+       |-- testfolder.zip ---------- Type: ZIPFILE,   Size: 9
+          |-- testfile.txt ---------- Type: FILE,   Size: 9
+Content: Hello world!012345
+          |-- testfileMove.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null
+==========testDelete() logs END===================
+ 
+==========testMoveHandleExceptionCase() logs START===============
+!!!!!!!!!!!Here we expect the testfile3.txt is added back to src folder E:\tmp !!!!!!!!!!
+    |-- E:\ ---------- Type: DRIVE,   Size: 52
+       |-- tmp ---------- Type: FOLDER,   Size: 52
+          |-- testfile1.txt ---------- Type: FILE,   Size: 52
+Content: Hello world!Hello world!012345Hello world!0123456789
+          |-- testfile5.txt ---------- Type: FILE,   Size: 0
+Content: null
+          |-- testfile3.txt ---------- Type: FILE,   Size: 0
+Content: null

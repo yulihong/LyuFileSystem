@@ -1,7 +1,6 @@
 package com.lyu.filesystem.impl;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.Arrays;
 import java.util.HashMap;

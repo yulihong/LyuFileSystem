@@ -1,0 +1,158 @@
+============== Build Drivers C and E ==============
+    |---------It also show creating folders and files ---------------------------|
+    |---------File contents is writen into files and show size-------------------|
+
+=========== Bellow are the current file lists of C:/ and E:/ ===========
+
+    +------------------------- File List of C:/ ---------------------------+
+    |-- C:/ ---------- Type: DRIVE,   Size: 165
+       |-- dir2 ---------- Type: FOLDER,   Size: 0
+       |-- dir1 ---------- Type: FOLDER,   Size: 165
+          |-- textFile_12.txt ---------- Type: FILE,   Size: 42
+Content: C:/dir1/textFile_12.txt --- abcdefghijklmn
+          |-- textFile_11.txt ---------- Type: FILE,   Size: 40
+Content: C:/dir1/textFile_11.txt --- Hello world!
+          |-- dir4 ---------- Type: FOLDER,   Size: 0
+          |-- dir3 ---------- Type: FOLDER,   Size: 45
+             |-- textFile_31.txt ---------- Type: FILE,   Size: 45
+Content: C:/dir1/dir3/textFile_31.txt --- Hello world!
+          |-- textFile_13.txt ---------- Type: FILE,   Size: 38
+Content: C:/dir1/textFile_13.txt --- 0123456789
+    +----------------------------------------------------------------------+
+
+    +------------------------- List List of E:/ ---------------------------+
+    |-- E:/ ---------- Type: DRIVE,   Size: 42
+       |-- dirE1 ---------- Type: FOLDER,   Size: 42
+          |-- textFile_E11.txt ---------- Type: FILE,   Size: 42
+Content: E:/dirE1/textFile_E11.txt --- Hello world!
+    +----------------------------------------------------------------------+
+
+=========== Read the file C:/dir1/textFile_11.txt ===========
+
+----- Bellow is the content of file C:/dir1/textFile_11.txt ----- 
+C:/dir1/textFile_11.txt --- Hello world!
+
+=========== Move file C:/dir1/textFile_12.txt to C:/dir2/textFile_12.txt ===========
+
+    - Bellow is the file list of C:/ after moving the file C:/dir1/textFile_12.txt to C:/dir2/textFile_12.txt
+    - C:/dir1/textFile_12.txt has been removed.
+    - C:/dir2/textFile_12.txt was added.
+
+    +------------------------- List of C Driver ---------------------------+
+    |-- C:/ ---------- Type: DRIVE,   Size: 165
+       |-- dir2 ---------- Type: FOLDER,   Size: 42
+          |-- textFile_12.txt ---------- Type: FILE,   Size: 42
+Content: C:/dir1/textFile_12.txt --- abcdefghijklmn
+       |-- dir1 ---------- Type: FOLDER,   Size: 123
+          |-- textFile_11.txt ---------- Type: FILE,   Size: 40
+Content: C:/dir1/textFile_11.txt --- Hello world!
+          |-- dir4 ---------- Type: FOLDER,   Size: 0
+          |-- dir3 ---------- Type: FOLDER,   Size: 45
+             |-- textFile_31.txt ---------- Type: FILE,   Size: 45
+Content: C:/dir1/dir3/textFile_31.txt --- Hello world!
+          |-- textFile_13.txt ---------- Type: FILE,   Size: 38
+Content: C:/dir1/textFile_13.txt --- 0123456789
+    +----------------------------------------------------------------------+
+
+=========== Move file C:/dir1/dir3/textFile_31.txt to E:/dirE1/ ===========
+
+    - Bellow are the file lists of C:/ and E:/ after moving the file C:/dir1/dir3/textFile_31.txt to E:/dirE1/
+    - C:/dir1/dir3/textFile_31.txt has been removed.
+    - E:/dirE1/textFile_31.txt was added.
+
+    +------------------------- List of C Driver ---------------------------+
+    |-- C:/ ---------- Type: DRIVE,   Size: 120
+       |-- dir2 ---------- Type: FOLDER,   Size: 42
+          |-- textFile_12.txt ---------- Type: FILE,   Size: 42
+Content: C:/dir1/textFile_12.txt --- abcdefghijklmn
+       |-- dir1 ---------- Type: FOLDER,   Size: 78
+          |-- textFile_11.txt ---------- Type: FILE,   Size: 40
+Content: C:/dir1/textFile_11.txt --- Hello world!
+          |-- dir4 ---------- Type: FOLDER,   Size: 0
+          |-- dir3 ---------- Type: FOLDER,   Size: 0
+          |-- textFile_13.txt ---------- Type: FILE,   Size: 38
+Content: C:/dir1/textFile_13.txt --- 0123456789
+    +----------------------------------------------------------------------+
+
+    +------------------------- List of E Driver ---------------------------+
+    |-- E:/ ---------- Type: DRIVE,   Size: 87
+       |-- dirE1 ---------- Type: FOLDER,   Size: 87
+          |-- textFile_31.txt ---------- Type: FILE,   Size: 45
+Content: C:/dir1/dir3/textFile_31.txt --- Hello world!
+          |-- textFile_E11.txt ---------- Type: FILE,   Size: 42
+Content: E:/dirE1/textFile_E11.txt --- Hello world!
+    +----------------------------------------------------------------------+
+
+=========== Move folder E:/dirE1 to C:/dir1/ ===========
+
+    - Bellow are the file lists of C:/ and E:/ after moving folder E:/dirE1 to C:/dir1/
+    - E:/ is now empty.
+    - Folder dirE1 was added to C:/dir1/.
+
+    +------------------------- List of C Driver ---------------------------+
+    |-- C:/ ---------- Type: DRIVE,   Size: 207
+       |-- dir2 ---------- Type: FOLDER,   Size: 42
+          |-- textFile_12.txt ---------- Type: FILE,   Size: 42
+Content: C:/dir1/textFile_12.txt --- abcdefghijklmn
+       |-- dir1 ---------- Type: FOLDER,   Size: 165
+          |-- textFile_11.txt ---------- Type: FILE,   Size: 40
+Content: C:/dir1/textFile_11.txt --- Hello world!
+          |-- dir4 ---------- Type: FOLDER,   Size: 0
+          |-- dir3 ---------- Type: FOLDER,   Size: 0
+          |-- dirE1 ---------- Type: FOLDER,   Size: 87
+             |-- textFile_31.txt ---------- Type: FILE,   Size: 45
+Content: C:/dir1/dir3/textFile_31.txt --- Hello world!
+             |-- textFile_E11.txt ---------- Type: FILE,   Size: 42
+Content: E:/dirE1/textFile_E11.txt --- Hello world!
+          |-- textFile_13.txt ---------- Type: FILE,   Size: 38
+Content: C:/dir1/textFile_13.txt --- 0123456789
+    +----------------------------------------------------------------------+
+
+    +------------------------- List of E Driver ---------------------------+
+    |-- E:/ ---------- Type: DRIVE,   Size: 0
+    +----------------------------------------------------------------------+
+
+=========== Delete file C:/dir1/textFile_11.txt ===========
+
+    - Bellow are the file lists of C:/ after deleting file C:/dir1/textFile_11.txt
+    - File C:/dir1/textFile_11.txt was removed.
+
+    +------------------------- List of C Driver ---------------------------+
+    |-- C:/ ---------- Type: DRIVE,   Size: 167
+       |-- dir2 ---------- Type: FOLDER,   Size: 42
+          |-- textFile_12.txt ---------- Type: FILE,   Size: 42
+Content: C:/dir1/textFile_12.txt --- abcdefghijklmn
+       |-- dir1 ---------- Type: FOLDER,   Size: 125
+          |-- dir4 ---------- Type: FOLDER,   Size: 0
+          |-- dir3 ---------- Type: FOLDER,   Size: 0
+          |-- dirE1 ---------- Type: FOLDER,   Size: 87
+             |-- textFile_31.txt ---------- Type: FILE,   Size: 45
+Content: C:/dir1/dir3/textFile_31.txt --- Hello world!
+             |-- textFile_E11.txt ---------- Type: FILE,   Size: 42
+Content: E:/dirE1/textFile_E11.txt --- Hello world!
+          |-- textFile_13.txt ---------- Type: FILE,   Size: 38
+Content: C:/dir1/textFile_13.txt --- 0123456789
+    +----------------------------------------------------------------------+
+
+=========== Zip file C:/dir1/textFile_13.txt ===========
+
+    - Bellow are the file lists of C:/ after zipping file C:/dir1/textFile_13.txt
+    - The name of file C:/dir1/textFile_13.txt has been changed to textFile_13.zip.
+    - The size of file C:/dir1/textFile_13.zip has been changed from 38 to 19. 
+    - It's parent folders (C:/, C:/dir1) are both reduce size correctly (167 -> 148, 125 -> 106).
+
+    +------------------------- List of C Driver ---------------------------+
+    |-- C:/ ---------- Type: DRIVE,   Size: 148
+       |-- dir2 ---------- Type: FOLDER,   Size: 42
+          |-- textFile_12.txt ---------- Type: FILE,   Size: 42
+Content: C:/dir1/textFile_12.txt --- abcdefghijklmn
+       |-- dir1 ---------- Type: FOLDER,   Size: 106
+          |-- dir4 ---------- Type: FOLDER,   Size: 0
+          |-- dir3 ---------- Type: FOLDER,   Size: 0
+          |-- dirE1 ---------- Type: FOLDER,   Size: 87
+             |-- textFile_31.txt ---------- Type: FILE,   Size: 45
+Content: C:/dir1/dir3/textFile_31.txt --- Hello world!
+             |-- textFile_E11.txt ---------- Type: FILE,   Size: 42
+Content: E:/dirE1/textFile_E11.txt --- Hello world!
+          |-- textFile_13.zip ---------- Type: ZIPFILE,   Size: 19
+    +----------------------------------------------------------------------+

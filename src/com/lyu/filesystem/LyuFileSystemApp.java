@@ -83,8 +83,8 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
  * so that it will stop process if delete from source folder fails and it will add folder or file
  * back to source folder if add() fails.
  * 
- * The exception is handled here in simplest way because this is just a test and we do not have clear
- * requirement on exception handling.
+ * The exception is handled here in the simplest way because this is just a test and we do not have clear
+ * requirements on exception handling.
  */
 public class LyuFileSystemApp {
 	
