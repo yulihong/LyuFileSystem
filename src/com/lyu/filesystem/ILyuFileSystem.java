@@ -23,8 +23,7 @@ public interface ILyuFileSystem {
 	LyuFile write(String path, String content) throws FileNotFoundException;
 	String read(String path) throws FileNotFoundException, IllegalArgumentException;
 	void zip(String path, String fileName) throws FileNotFoundException;
-	//The following method is used in LyuFileSystemImpl for 
-	//finding root in a tree. This need to be defined here because
+	//The following method need to be defined here because
 	//there are multiple trees in the file system
-	public LyuDirectoryNode findRootNode(String path) throws FileNotFoundException;
+	public LyuDirectoryNode findRootNode(String path) throws RuntimeException;
 }

@@ -104,13 +104,20 @@ public class LyuFileSystemImpl implements ILyuFileSystem{
 		return newFile;
 	}
 
-	public LyuDirectoryNode findRootNode(String path) throws FileNotFoundException {
+	/*
+	 * (non-Javadoc)
+	 * @see com.lyu.filesystem.ILyuFileSystem#findRootNode(java.lang.String)
+	 * throw unchecked exception because print tree need o used in catch block.
+	 * unchecked exception can avoid add try catch block in a catch block.
+	 */
+	@Override
+	public LyuDirectoryNode findRootNode(String path) throws RuntimeException {
 		LyuDirectoryNode root = null;
 		if(!path.startsWith(DEFAULT_ROOT_NAME) && path.contains(":")) //in a drive
 		{
 			String driveName = findRootNameInPath(path);		
 			if(driveName == null){//no name in path
-				throw new FileNotFoundException("No such drive name " + path);
+				throw new RuntimeException("No such drive name " + path);
 			}
 				
 			if(trees.containsKey(driveName)){
@@ -208,7 +215,10 @@ public class LyuFileSystemImpl implements ILyuFileSystem{
 		try {
 			success = addNode(target, movedNode);
 		} catch (FileNotFoundException | FileAlreadyExistsException e) {
-			success = addNode(src, movedNode);//add back to source
+			LinkedList<String> pathList = getPathList(src);
+			String fileName = pathList.getLast();
+		    String path = src.replace(fileName, "");//remove file name in path
+			success = addNode(path, movedNode);//add back to source
 			throw new RuntimeException("Cannot add folder or file to destination folder  " + target, e);
 		}
 		return success;

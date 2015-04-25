@@ -1,6 +1,8 @@
 package com.lyu.filesystem;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,7 +14,14 @@ import org.junit.Test;
 import com.lyu.filesystem.entity.LyuFile;
 import com.lyu.filesystem.impl.LyuDirectoryNode;
 import com.lyu.filesystem.impl.LyuFileSystemImpl;
-
+/**
+ * 
+ * @version 0.1
+ * @since April 10, 2015
+ * This is the test class which use Windows path separator '\' 
+ * The test cases do not depend on each other. They are designed to be able to run in a
+ * arbitrary order.
+ */
 public class TestLyuFileSystem {
 	private static ILyuFileSystem lyuFileSystem;
 	/**
@@ -31,6 +40,7 @@ public class TestLyuFileSystem {
 	    lyuFileSystem.create(LyuFile.FILE_TYPE.FOLDER, "tmp", "E:\\");		
 	    Assert.assertNotNull(createdDrive);
 	    LyuFile createdFile1 = lyuFileSystem.create(LyuFile.FILE_TYPE.FILE, "testfile1.txt", "E:\\tmp");
+	    createdFile1 = lyuFileSystem.create(LyuFile.FILE_TYPE.FILE, "testfileMove.txt", "E:\\tmp");
 	    createdFile1 = lyuFileSystem.create(LyuFile.FILE_TYPE.FILE, "testfile3.txt", "E:\\tmp");
 	    createdFile1 = lyuFileSystem.create(LyuFile.FILE_TYPE.FILE, "testfileDel.txt", "E:\\tmp");
 	    Assert.assertNotNull(createdFile1);
@@ -49,14 +59,37 @@ public class TestLyuFileSystem {
 	public void tearDown() throws Exception {
 	}
 	
-	//@Test
-	public void testMove() {
+	@Test
+	public void testMoveHandleExceptionCase() {
 		try {
 			System.out.println("==========testMove() logs START===============");
 			System.out.println("This is the tree before moving:");
 			LyuDirectoryNode eRootNode = lyuFileSystem.findRootNode("C:\\");
 			eRootNode.printOutTree("");
 			boolean success = lyuFileSystem.move("E:\\tmp\\testfile3.txt", "C:\\testfolder");
+			//ASSERT FAIL!!!!
+			Assert.assertFalse(success);
+			System.out.println("This is the tree after moving:");
+			LyuDirectoryNode rootNode = lyuFileSystem.findRootNode("C:\\");
+			rootNode.printOutTree("");
+			System.out.println("==========testMove() logs END===================");
+			System.out.println(" ");
+			
+		} catch (FileNotFoundException | FileAlreadyExistsException | RuntimeException e) {
+			System.out.println("!!!!!!!!!!!Here we expect the folder or file is added back to src folder !!!!!!!!!!");
+			LyuDirectoryNode rootNode = lyuFileSystem.findRootNode("E:\\");
+			rootNode.printOutTree("");
+		}
+	}
+	
+	@Test
+	public void testMove() {
+		try {
+			System.out.println("==========testMove() logs START===============");
+			System.out.println("This is the tree before moving:");
+			LyuDirectoryNode eRootNode = lyuFileSystem.findRootNode("C:\\");
+			eRootNode.printOutTree("");
+			boolean success = lyuFileSystem.move("E:\\tmp\\testfileMove.txt", "C:\\testfolder");
 			Assert.assertTrue(success);
 			System.out.println("This is the tree after moving:");
 			LyuDirectoryNode rootNode = lyuFileSystem.findRootNode("C:\\");
@@ -64,8 +97,10 @@ public class TestLyuFileSystem {
 			System.out.println("==========testMove() logs END===================");
 			System.out.println(" ");
 			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (FileNotFoundException | FileAlreadyExistsException | IllegalArgumentException e) {
+			System.out.println("!!!!!!!!!!!Here we expect the folder or file is added back to src folder !!!!!!!!!!");
+			LyuDirectoryNode rootNode = lyuFileSystem.findRootNode("E:\\");
+			rootNode.printOutTree("");
 			e.printStackTrace();
 		}
 	}

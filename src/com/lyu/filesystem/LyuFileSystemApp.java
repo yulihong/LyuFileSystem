@@ -16,7 +16,7 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
  * This is an application which implements an in-memory file system. This file-system consists of 4 types of entities: 
  * Drives, Folders, Text files, and Zip files.
  * 
- * These entities, very much like their â€œrealâ€� file-system counterparts, obey the following relations.
+ * These entities, very much like their 'real' file-system counterparts, obey the following relations.
 
  * 1. A folder, a drive or a zip file, may contain zero to many other folders, or files (text or zip).
  * 2. A text file does not contain any other entity.
@@ -27,36 +27,36 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
  
  * Every entity has the following properties:
 
- *   + Type â€“ The type of the entity (one of the 4 type above).
+ *   + Type - The type of the entity (one of the 4 type above).
  *   + Name - An alphanumeric string. Two entities with the same parent cannot have the same name. Similarly, two drives cannot have the same name.
- *   + Path â€“ The concatenation of the names of the containing entities, from the drive down to and including the entity. The names are separated by â€˜\â€™.
+ *   + Path - The concatenation of the names of the containing entities, from the drive down to and including the entity. The names are separated by '\'.
  *   + A text file has a property called Content which is a string.
- *   + Size â€“ an integer defined as follows:
+ *   + Size - an integer defined as follows:
 
- * Â§  For a text file â€“ it is the length of its content.
- * Â§  For a drive or a folder, it is the sum of all sizes of the entities it contains.
- * Â§  For a zip file, it is one half of the sum of all sizes of the entities it contains.
+ *   +For a text file â€“ it is the length of its content.
+ *   +For a drive or a folder, it is the sum of all sizes of the entities it contains.
+ *   +For a zip file, it is one half of the sum of all sizes of the entities it contains.
  
  * The system should be capable of supporting file-system like operations
  
- * 1)	Create â€“ Creates a new entity.
+ * 1)	Create - Creates a new entity.
  * Arguments: Type, Name, Path of parent.
  * Exceptions: Path not found; Path already exists; Illegal File System Operation (if any of the rules a-d above is violated).
 
- * 2)	Delete â€“ Deletes an existing entity (and all the entities it contains).
+ * 2)	Delete - Deletes an existing entity (and all the entities it contains).
  * Arguments: Path
  * Exceptions: Path not found.
 
- * 3)	Move â€“ Changing the parent of an entity.
+ * 3)	Move - Changing the parent of an entity.
  * Arguments: Source Path, Destination Path.
  * Exceptions: Path not found; Path already exists, Illegal File System Operation.
 
- * 4)	WriteToFile â€“ Changes the content of a text file.
+ * 4)	WriteToFile - Changes the content of a text file.
  * Arguments: Path, Content
  * Exceptions: Path not found; Not a text file.
  
  * Tasks:
- * 1. Come up with the design for this system. Full implementation is not required, but only to the level which you feel is a â€œproof of conceptâ€�.
+ * 1. Come up with the design for this system. Full implementation is not required, but only to the level which you feel is a "proof of concept".
  * 2. Show a sketch of implementation of the Move operation.
  * 3. Explicitly implement the property Size.
  *
@@ -71,6 +71,20 @@ import com.lyu.filesystem.impl.LyuFileSystemImpl;
  * It also define a more user friendly API and hide some implementation complexity.
  * For example addDriver(String driverName) is more readable than
  * create(LyuFile.FILE_TYPE.DRIVE, driverName, driverName);
+ */
+
+/**
+ * 
+ * @author Lihong Yu
+ * @version 0.2
+ * @since April 25, 2015
+ * The exception handling is designed to let callers to handle.
+ * Only in move() method which called delete() and add(), I handled the exception
+ * so that it will stop process if delete from source folder fails and it will add folder or file
+ * back to source folder if add() fails.
+ * 
+ * The exception is handled here in simplest way because this is just a test and we do not have clear
+ * requirement on exception handling.
  */
 public class LyuFileSystemApp {
 	
